@@ -1,0 +1,13 @@
+package org.example.datagen;
+
+import org.apache.xmlbeans.XmlException;
+
+import java.io.IOException;
+
+public class Main {
+    public static void main(String[] args) throws Exception{
+        DataParser xsdParser = new XSDParser();
+        DataGenerator dataGenerator = new DataGenerator(xsdParser);
+        dataGenerator.generateFakeData("E:\\HomeLab\\apps\\Microservices\\ScreenCapture\\src\\main\\resources\\schema.xsd");
+    }
+}
