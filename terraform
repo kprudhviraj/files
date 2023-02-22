@@ -1,0 +1,60 @@
+provider "aws" {
+  region = "us-west-2"
+}
+
+resource "aws_iam_user" "example_user" {
+  name = "example-user"
+  path = "/example/"
+}
+
+resource "aws_iam_access_key" "example_user_key" {
+  user = aws_iam_user.example_user.name
+}
+
+resource "aws_iam_user_policy" "example_user_policy" {
+  name   = "example-user-policy"
+  policy = jsonencode({
+    Version = "2012-10-17"
+    Statement = [
+      {
+        Effect   = "Allow"
+        Action   = [
+          "sqs:SendMessage",
+          "sqs:ReceiveMessage",
+          "sqs:DeleteMessage",
+          "sqs:GetQueueAttributes",
+          "sqs:ListQueueTags",
+          "sqs:TagQueue",
+          "sqs:UntagQueue"
+        ]
+        Resource = "*"
+      },
+      {
+        Effect   = "Allow"
+        Action   = [
+          "s3:ListBucket"
+        ]
+        Resource = "arn:aws:s3:::example-bucket"
+      },
+      {
+        Effect   = "Allow"
+        Action   = [
+          "s3:PutObject",
+          "s3:GetObject",
+          "s3:DeleteObject"
+        ]
+        Resource = "arn:aws:s3:::example-bucket/*"
+      }
+    ]
+  })
+
+  user = aws_iam_user.example_user.name
+}
+
+output "access_key_id" {
+  value = aws_iam_access_key.example_user_key.id
+}
+
+output "secret_access_key" {
+  value = aws_iam_access_key.example_user_key.secret
+}
