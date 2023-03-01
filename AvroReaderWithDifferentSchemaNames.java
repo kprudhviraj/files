@@ -1,5 +1,4 @@
 import org.apache.avro.Schema;
-import org.apache.avro.SchemaBuilder;
 import org.apache.avro.generic.GenericData;
 import org.apache.avro.generic.GenericDatumReader;
 import org.apache.avro.generic.GenericRecord;
@@ -22,18 +21,7 @@ public class AvroReaderWithDifferentSchemaNames {
 
         GenericRecord record = datumReader.read(null, decoder);
 
-        GenericData genericData = GenericData.get();
-        int resolvedSchemaIndex = genericData.resolveUnion(writerSchema, readerSchema);
-        Schema resolvedSchema = writerSchema.getTypes().get(resolvedSchemaIndex);
-
-        GenericRecord resolvedRecord = new GenericData.Record(resolvedSchema);
-        for (Schema.Field field : resolvedSchema.getFields()) {
-            String fieldName = field.name();
-            Object fieldValue = record.get(fieldName);
-            resolvedRecord.put(fieldName, fieldValue);
-        }
-
-        System.out.println(resolvedRecord);
+        System.out.println(record);
     }
 
     private static byte[] getAvroData() throws IOException {
@@ -58,31 +46,109 @@ public class AvroReaderWithDifferentSchemaNames {
     }
 
     private static Schema getWriterSchema() {
-        return SchemaBuilder.record("Person")
-                .namespace("com.example.avro")
-                .fields()
-                .name("full_name").type().stringType().noDefault()
-                .name("age").type().intType().noDefault()
-                .name("address").type(addressSchema()).noDefault()
-                .endRecord();
-    }
+        String schemaJson = "{\n" +
+                "  \"namespace\": \"com.example.avro\",\n" +
+                "  \"name\": \"Person\",\n" +
+                "  \"aliases\": [\"com.example.Person\"],\n" +
+                "  \"type\": \"record\",\n" +
+                "  \"fields\": [\n" +
+                "    {\n" +
+                "      \"name\": \"full_name\",\n" +
+                "      \"type\": \"string\"\n" +
+                "    },\n" +
+                "    {\n" +
+                "      \"name\": \"age\",\n" +
+                "      \"type\": \"int\"\n" +
+                "    },\n" +
+                "    {\n" +
+                "      \"name\": \"address\",\n" +
+                "      \"type\": {\n" +
+                "        \"namespace\": \"com.example.avro\",\n" +
+                "        \"name\": \"Address\",\n" +
+                "        \"aliases\": [\"com.example.Address\"],\n" +
+                "        \"type\": \"record\",\n" +
+                "        \"fields\": [\n" +
+                "          {\n" +
+                "            \"name\": \"street\",\n" +
+                "            \"type\": \"string\"\n" +
+                "          },\n" +
+                "          {\n" +
+                "            \"name\": \"city\",\n" +
+                "            \"type\": \"string\"\n" +
+                "          },\n" +
+                "          {\n" +
+                "            \"name\": \"zip\",\n" +
+                "           
+            "            \"type\": \"int\"\n" +
+            "          }\n" +
+            "        ]\n" +
+            "      }\n" +
+            "    }\n" +
+            "  ]\n" +
+            "}";
+    return new Schema.Parser().parse(schemaJson);
+}
 
-    private static Schema getReaderSchema() {
-        return SchemaBuilder.record("Person")
-                .namespace("com.example.avro")
-                .fields()
-                .name("full_name").type().stringType().noDefault()
-                .name("address").type(addressSchema()).noDefault()
-                .endRecord();
-    }
+private static Schema getReaderSchema() {
+    String schemaJson = "{\n" +
+            "  \"namespace\": \"com.example.avro\",\n" +
+            "  \"name\": \"Person\",\n" +
+            "  \"aliases\": [\"com.example.Person\"],\n" +
+            "  \"type\": \"record\",\n" +
+            "  \"fields\": [\n" +
+            "    {\n" +
+            "      \"name\": \"full_name\",\n" +
+            "      \"type\": \"string\"\n" +
+            "    },\n" +
+            "    {\n" +
+            "      \"name\": \"address\",\n" +
+            "      \"type\": {\n" +
+            "        \"namespace\": \"com.example.avro\",\n" +
+            "        \"name\": \"Address\",\n" +
+            "        \"aliases\": [\"com.example.Address\"],\n" +
+            "        \"type\": \"record\",\n" +
+            "        \"fields\": [\n" +
+            "          {\n" +
+            "            \"name\": \"street\",\n" +
+            "            \"type\": \"string\"\n" +
+            "          },\n" +
+            "          {\n" +
+            "            \"name\": \"city\",\n" +
+            "            \"type\": \"string\"\n" +
+            "          },\n" +
+            "          {\n" +
+            "            \"name\": \"zip\",\n" +
+            "            \"type\": \"int\"\n" +
+            "          }\n" +
+            "        ]\n" +
+            "      }\n" +
+            "    }\n" +
+            "  ]\n" +
+            "}";
+    return new Schema.Parser().parse(schemaJson);
+}
 
-    private static Schema addressSchema() {
-        return SchemaBuilder.record("Address")
-                .namespace("com.example.avro")
-                .fields()
-                .name("street").type().stringType().noDefault()
-                .name("city").type().stringType().noDefault()
-                .name("zip").type().intType().noDefault()
-                .endRecord();
-    }
+private static Schema addressSchema() {
+    String schemaJson = "{\n" +
+            "  \"namespace\": \"com.example.avro\",\n" +
+            "  \"name\": \"Address\",\n" +
+            "  \"aliases\": [\"com.example.Address\"],\n" +
+            "  \"type\": \"record\",\n" +
+            "  \"fields\": [\n" +
+            "    {\n" +
+            "      \"name\": \"street\",\n" +
+            "      \"type\": \"string\"\n" +
+            "    },\n" +
+            "    {\n" +
+            "      \"name\": \"city\",\n" +
+            "      \"type\": \"string\"\n" +
+            "    },\n" +
+            "    {\n" +
+            "      \"name\": \"zip\",\n" +
+            "      \"type\": \"int\"\n" +
+            "    }\n" +
+            "  ]\n" +
+            "}";
+    return new Schema.Parser().parse(schemaJson);
+}
 }
