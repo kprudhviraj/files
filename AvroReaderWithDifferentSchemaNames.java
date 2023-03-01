@@ -23,7 +23,8 @@ public class AvroReaderWithDifferentSchemaNames {
         GenericRecord record = datumReader.read(null, decoder);
 
         GenericData genericData = GenericData.get();
-        Schema resolvedSchema = genericData.resolveUnion(writerSchema, readerSchema);
+        int resolvedSchemaIndex = genericData.resolveUnion(writerSchema, readerSchema);
+        Schema resolvedSchema = writerSchema.getTypes().get(resolvedSchemaIndex);
 
         GenericRecord resolvedRecord = new GenericData.Record(resolvedSchema);
         for (Schema.Field field : resolvedSchema.getFields()) {
@@ -38,8 +39,13 @@ public class AvroReaderWithDifferentSchemaNames {
     private static byte[] getAvroData() throws IOException {
         Schema schema = getWriterSchema();
         GenericRecord record = new GenericData.Record(schema);
-        record.put("name", "Alice");
+        record.put("full_name", "Alice");
         record.put("age", 25);
+        GenericRecord address = new GenericData.Record(schema.getField("address").schema());
+        address.put("street", "123 Main St.");
+        address.put("city", "Anytown");
+        address.put("zip", 12345);
+        record.put("address", address);
 
         DatumWriter<GenericRecord> datumWriter = new GenericDatumWriter<>(schema);
         ByteArrayOutputStream out = new ByteArrayOutputStream();
@@ -52,12 +58,31 @@ public class AvroReaderWithDifferentSchemaNames {
     }
 
     private static Schema getWriterSchema() {
-        String schemaJson = "{\"type\":\"record\",\"name\":\"Person\",\"namespace\":\"com.example.avro\",\"fields\":[{\"name\":\"full_name\",\"type\":\"string\"},{\"name\":\"age\",\"type\":\"int\"},{\"name\":\"address\",\"type\":{\"type\":\"record\",\"name\":\"Address\",\"fields\":[{\"name\":\"street\",\"type\":\"string\"},{\"name\":\"city\",\"type\":\"string\"},{\"name\":\"zip\",\"type\":\"int\"}]}}]}";
-        return new Schema.Parser().parse(schemaJson);
+        return SchemaBuilder.record("Person")
+                .namespace("com.example.avro")
+                .fields()
+                .name("full_name").type().stringType().noDefault()
+                .name("age").type().intType().noDefault()
+                .name("address").type(addressSchema()).noDefault()
+                .endRecord();
     }
 
     private static Schema getReaderSchema() {
-        String schemaJson = "{\"type\":\"record\",\"name\":\"Person\",\"namespace\":\"com.example.avro\",\"fields\":[{\"name\":\"full_name\",\"type\":\"string\"},{\"name\":\"address\",\"type\":{\"type\":\"record\",\"name\":\"Address\",\"fields\":[{\"name\":\"street\",\"type\":\"string\"},{\"name\":\"city\",\"type\":\"string\"}]}}]}";
-        return new Schema.Parser().parse(schemaJson);
+        return SchemaBuilder.record("Person")
+                .namespace("com.example.avro")
+                .fields()
+                .name("full_name").type().stringType().noDefault()
+                .name("address").type(addressSchema()).noDefault()
+                .endRecord();
+    }
+
+    private static Schema addressSchema() {
+        return SchemaBuilder.record("Address")
+                .namespace("com.example.avro")
+                .fields()
+                .name("street").type().stringType().noDefault()
+                .name("city").type().stringType().noDefault()
+                .name("zip").type().intType().noDefault()
+                .endRecord();
     }
 }
