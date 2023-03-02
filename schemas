@@ -1,0 +1,70 @@
+{
+  "type": "record",
+  "name": "Person",
+  "fields": [
+    {"name": "name", "type": "string"},
+    {"name": "age", "type": "int"},
+    {
+      "name": "address",
+      "type": {
+        "type": "record",
+        "name": "Address",
+        "fields": [
+          {"name": "street", "type": "string"},
+          {"name": "city", "type": "string"},
+          {"name": "state", "type": "string"}
+        ]
+      }
+    }
+  ]
+}
+
+
+
+
+{
+  "type": "record",
+  "name": "PersonWithAbbreviatedState",
+  "fields": [
+    {"name": "name", "type": "string"},
+    {"name": "age", "type": "int"},
+    {
+      "name": "address",
+      "type": {
+        "type": "record",
+        "name": "Address",
+        "aliases": ["Person.Address"],
+        "fields": [
+          {"name": "street", "type": "string"},
+          {"name": "city", "type": "string"},
+          {"name": "st", "type": "string", "aliases": ["state"]}
+        ]
+      }
+    }
+  ]
+}
+
+
+
+{
+  "type": "record",
+  "name": "Person",
+  "fields": [
+    {"name": "name", "type": "string"},
+    {"name": "age", "type": "int"},
+    {"name": "phones", "type": {"type": "array", "items": "string"}}
+  ]
+}
+
+
+
+
+{
+  "type": "record",
+  "name": "PersonWithTelephoneNumbers",
+  "fields": [
+    {"name": "name", "type": "string"},
+    {"name": "age", "type": "int"},
+    {"name": "telephone_numbers", "type": {"type": "array", "items": "string"}, "aliases": ["phones"]}
+  ]
+}
