@@ -1,0 +1,37 @@
+Sure, here's an outline for a Confluence page that documents MongoDB Atlas IAM user roles created with Terraform in different environments:
+
+Introduction:
+
+Briefly describe the purpose and scope of the MongoDB Atlas IAM user roles created with Terraform for your project.
+Explain why MongoDB Atlas was chosen as the database service and Terraform was chosen as the infrastructure as code tool.
+Overview:
+
+Provide an overview of the MongoDB Atlas IAM user roles managed by Terraform, such as:
+Role-based access control for different database resources (e.g., databases, collections, indexes, etc.)
+Different permissions and privileges assigned to each role.
+Include a diagram to help visualize the IAM user roles and their relationships.
+Terraform Configuration:
+
+Provide an explanation of the Terraform configuration files used to manage the IAM user roles.
+Include a description of the provider blocks used to authenticate with MongoDB Atlas and the resources used to create and manage the IAM user roles.
+Include examples of Terraform configuration files for common IAM user roles, such as a read-only user or a user with admin privileges.
+Terraform Workflow:
+
+Describe the typical Terraform workflow used for managing the IAM user roles, including the terraform init, terraform plan, and terraform apply commands.
+Explain how Terraform state files are managed and how they are used to ensure consistency between the desired IAM user role configuration and the actual state of the IAM user roles.
+Environments:
+
+Describe the different environments where the MongoDB Atlas IAM user roles are managed with Terraform, such as dev, qa, stage, and prod.
+Include a table that lists the IAM user roles created in each environment, their permissions and privileges, and any specific notes or caveats for each environment.
+Best Practices:
+
+Provide best practices for managing MongoDB Atlas IAM user roles in your project, such as:
+Role-based access control based on the principle of least privilege
+Regular review and auditing of IAM user roles
+Isolation of IAM user roles for different environments
+Troubleshooting:
+
+Include troubleshooting tips for common issues encountered while using Terraform and MongoDB Atlas IAM user roles, such as:
+Authentication issues with MongoDB Atlas API keys
+Incorrectly configured IAM user roles and permissions
+State file conflicts when managing IAM user roles in multiple environments.
