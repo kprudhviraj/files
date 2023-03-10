@@ -29,48 +29,59 @@ public class AvroGenerator {
     }
 
     private static Object getDefaultValue(Schema schema) {
-        Type type = schema.getType();
-        switch (type) {
-            case ARRAY:
-                return new GenericData.Array<>(0, schema);
-            case BOOLEAN:
-                return false;
-            case BYTES:
-                return ByteBuffer.wrap(new byte[0]);
-            case DOUBLE:
-                return 0.0;
-            case ENUM:
-                return schema.getEnumSymbols().get(0);
-            case FIXED:
-                return new GenericData.Fixed(schema);
-            case FLOAT:
-                return 0.0f;
-            case INT:
-                return 0;
-            case LONG:
-                return 0L;
-            case MAP:
-                return new GenericData.StringMap<>(0);
-            case NULL:
-                return null;
-            case RECORD:
-                GenericRecord record = new GenericData.Record(schema);
-                for (Schema.Field field : schema.getFields()) {
+    Type type = schema.getType();
+    switch (type) {
+        case ARRAY:
+            Schema elementSchema = schema.getElementType();
+            if (elementSchema.getType().equals(Type.RECORD)) {
+                GenericRecord elementRecord = new GenericData.Record(elementSchema);
+                for (Schema.Field field : elementSchema.getFields()) {
                     Object defaultValue = getDefaultValue(field.schema());
-                    record.put(field.name(), defaultValue);
+                    elementRecord.put(field.name(), defaultValue);
                 }
-                return record;
-            case STRING:
-                return "";
-            case UNION:
-                for (Schema unionSchema : schema.getTypes()) {
-                    if (!unionSchema.getType().equals(Type.NULL)) {
-                        return getDefaultValue(unionSchema);
-                    }
+                return new GenericData.Array<>(0, schema);
+            } else {
+                return new GenericData.Array<>(0, schema);
+            }
+        case BOOLEAN:
+            return false;
+        case BYTES:
+            return ByteBuffer.wrap(new byte[0]);
+        case DOUBLE:
+            return 0.0;
+        case ENUM:
+            return schema.getEnumSymbols().get(0);
+        case FIXED:
+            return new GenericData.Fixed(schema);
+        case FLOAT:
+            return 0.0f;
+        case INT:
+            return 0;
+        case LONG:
+            return 0L;
+        case MAP:
+            return new HashMap<>();
+        case NULL:
+            return null;
+        case RECORD:
+            GenericRecord record = new GenericData.Record(schema);
+            for (Schema.Field field : schema.getFields()) {
+                Object defaultValue = getDefaultValue(field.schema());
+                record.put(field.name(), defaultValue);
+            }
+            return record;
+        case STRING:
+            return "";
+        case UNION:
+            for (Schema unionSchema : schema.getTypes()) {
+                if (!unionSchema.getType().equals(Type.NULL)) {
+                    return getDefaultValue(unionSchema);
                 }
-                return null;
-            default:
-                throw new IllegalArgumentException("Unknown schema type: " + type);
-        }
+            }
+            return null;
+        default:
+            throw new IllegalArgumentException("Unknown schema type: " + type);
     }
+}
+
 }
