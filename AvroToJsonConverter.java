@@ -1,10 +1,6 @@
 import org.apache.avro.Schema;
-import org.apache.avro.generic.GenericData;
-import org.apache.avro.generic.GenericRecord;
-import org.apache.avro.util.Utf8;
-import org.codehaus.jackson.map.ObjectMapper;
-import org.codehaus.jackson.node.JsonNodeFactory;
-import org.codehaus.jackson.node.ObjectNode;
+import org.json.JSONArray;
+import org.json.JSONObject;
 
 import java.io.File;
 import java.io.IOException;
@@ -12,27 +8,24 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class AvroToJsonConverter {
-    private static final ObjectMapper mapper = new ObjectMapper();
-    private static final JsonNodeFactory nodeFactory = JsonNodeFactory.instance;
-
     public static void main(String[] args) throws IOException {
         // Read the Avro schema from a file
         Schema schema = new Schema.Parser().parse(new File("example.avsc"));
 
         // Convert the schema to a JSON object
-        ObjectNode schemaJson = toJson(schema);
+        JSONObject schemaJson = toJson(schema);
 
-        System.out.println(schemaJson);
+        System.out.println(schemaJson.toString(4));
     }
 
-    private static ObjectNode toJson(Schema schema) {
-        ObjectNode json = nodeFactory.objectNode();
+    private static JSONObject toJson(Schema schema) {
+        JSONObject json = new JSONObject();
 
         if (schema.getFields() != null && !schema.getFields().isEmpty()) {
-            List<ObjectNode> fieldsJson = new ArrayList<>();
+            List<JSONObject> fieldsJson = new ArrayList<>();
 
             for (Schema.Field field : schema.getFields()) {
-                ObjectNode fieldJson = getFieldJson(field);
+                JSONObject fieldJson = getFieldJson(field);
 
                 if (fieldJson != null) {
                     fieldsJson.add(fieldJson);
@@ -40,15 +33,15 @@ public class AvroToJsonConverter {
             }
 
             if (!fieldsJson.isEmpty()) {
-                json.put("fields", mapper.valueToTree(fieldsJson));
+                json.put("fields", new JSONArray(fieldsJson));
             }
         }
 
         return json;
     }
 
-    private static ObjectNode getFieldJson(Schema.Field field) {
-        ObjectNode json = nodeFactory.objectNode();
+    private static JSONObject getFieldJson(Schema.Field field) {
+        JSONObject json = new JSONObject();
 
         json.put("name", field.name());
 
