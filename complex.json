@@ -1,0 +1,70 @@
+{
+  "name": "John Doe",
+  "age": 30,
+  "address": {
+    "street": "123 Main St",
+    "city": "Anytown",
+    "state": "CA"
+  },
+  "phone_numbers": ["555-1234", "555-5678"],
+  "email": "john.doe@example.com",
+  "favorite_color": "blue",
+  "education": [
+    {
+      "school": "Harvard University",
+      "degree": "Bachelor of Arts",
+      "year": 2014,
+      "courses": [
+        {
+          "course_name": "Computer Science 101",
+          "course_id": "CS101",
+          "instructor": {
+            "name": "Jane Smith",
+            "department": {
+              "name": "Computer Science",
+              "chair": {
+                "name": "John Johnson",
+                "office": "1234 Engineering Building"
+              }
+            }
+          }
+        },
+        {
+          "course_name": "Statistics 101",
+          "course_id": "STAT101",
+          "instructor": {
+            "name": "John Smith",
+            "department": {
+              "name": "Mathematics",
+              "chair": {
+                "name": "Sarah Johnson",
+                "office": "5678 Science Building"
+              }
+            }
+          }
+        }
+      ]
+    },
+    {
+      "school": "Stanford University",
+      "degree": "Master of Science",
+      "year": 2016,
+      "courses": [
+        {
+          "course_name": "Artificial Intelligence",
+          "course_id": "AI",
+          "instructor": {
+            "name": "Bob Lee",
+            "department": {
+              "name": "Computer Science",
+              "chair": {
+                "name": "Jane Johnson",
+                "office": "2468 Engineering Building"
+              }
+            }
+          }
+        }
+      ]
+    }
+  ]
+}

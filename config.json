@@ -1,0 +1,11 @@
+{
+  "name": {"target":"person.fullName"},
+  "age": {"target":"person.age"},
+  "phone_numbers": {"target":"person.phoneNumbers"},
+  "education": {
+    "target":"person.education",
+    "renames":[
+      {"inputField":"person.education.courses","targetField":"person.education.courses1"}
+    ]
+  }
+}
